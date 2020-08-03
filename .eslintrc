@@ -1,0 +1,4 @@
+{
+  "extends": ["@ridi/eslint-config/typescript"],
+  "rules": {}
+}
