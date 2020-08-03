@@ -3,31 +3,28 @@ import {
   PrimaryGeneratedColumn,
   BaseEntity,
   Column,
-  Index,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from "typeorm";
 
 import { ObjectType, Field, ID } from "type-graphql";
 
 @ObjectType()
-@Entity("user", { synchronize: true })
-export default class User extends BaseEntity {
+@Entity("tag", { synchronize: true })
+export default class Tag extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @Field()
   @Column({ length: 255 })
-  @Index({ unique: true })
-  email!: string;
+  name!: string;
 
-  @Column({ length: 150 })
-  password!: string;
-
-  @Field({ nullable: true })
-  @Column({ length: 255 })
-  role!: string;
+  @Field()
+  @Index()
+  @Column({ name: "filter_name", length: 255 })
+  filterName!: string;
 
   @Field()
   @CreateDateColumn({ name: "created_at" })

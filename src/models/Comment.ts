@@ -2,10 +2,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   BaseEntity,
-  ManyToMany,
-  JoinTable,
   Column,
-  Index,
   CreateDateColumn,
   UpdateDateColumn,
 } from "typeorm";
@@ -20,30 +17,30 @@ export default class Comment extends BaseEntity {
   id!: string;
 
   @Field()
-  @Column({ length: 100 })
-  @Index({ unique: true })
-  title!: string;
+  @Column({ length: 255 })
+  name!: string;
 
   @Field()
-  @Column({ length: 200 })
+  @Column({ length: 255 })
+  password!: string;
+
+  @Field()
+  @Column({ length: 255 })
+  email!: string;
+
+  @Field()
+  @Column({ length: 255 })
   thumbnail!: string;
 
   @Field()
-  @Column({ type: "text" })
+  @Column({ type: "mediumtext" })
   contents!: string;
 
   @Field()
-  @Column()
-  hit!: number;
-
   @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;
 
+  @Field()
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt!: Date;
-
-  // User(*) <-> Role(*)
-  // @ManyToMany(() => Role, { onDelete: "CASCADE" })
-  // @JoinTable({ name: "users_roles" })
-  // roles!: Role[];
 }
