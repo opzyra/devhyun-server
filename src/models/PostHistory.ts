@@ -36,10 +36,10 @@ export default class PostHistory extends BaseEntity {
   contents!: string;
 
   @Field()
-  @CreateDateColumn({ name: "created_at" })
+  @CreateDateColumn({ precision: null, default: () => "CURRENT_TIMESTAMP" })
   createdAt!: Date;
 
   @Field()
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ precision: null, default: () => "CURRENT_TIMESTAMP" })
   updatedAt!: Date;
 }

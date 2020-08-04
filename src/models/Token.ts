@@ -6,10 +6,10 @@ import {
   BaseEntity,
   CreateDateColumn,
   UpdateDateColumn,
+  Column,
 } from "typeorm";
 
 import User from "@/models/User";
-import { Field } from "type-graphql";
 
 @Entity("token", { synchronize: true })
 export default class Token extends BaseEntity {
@@ -21,11 +21,22 @@ export default class Token extends BaseEntity {
   @JoinColumn()
   user!: User;
 
-  @Field()
-  @CreateDateColumn({ name: "created_at" })
+  @Column()
+  expiredAt!: Date;
+
+  @CreateDateColumn({ precision: null, default: () => "CURRENT_TIMESTAMP" })
   createdAt!: Date;
 
-  @Field()
-  @UpdateDateColumn({ name: "updated_at" })
+  @UpdateDateColumn({ precision: null, default: () => "CURRENT_TIMESTAMP" })
   updatedAt!: Date;
+
+  static async findByUserId(userId: string): Promise<Token | undefined> {
+    return await this.findOne({
+      where: {
+        user: {
+          id: userId,
+        },
+      },
+    });
+  }
 }
