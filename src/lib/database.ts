@@ -12,8 +12,8 @@ import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 import { Request, Response, NextFunction } from "express";
 
 import path from "path";
-import logger from "./logger";
 import { HttpError } from "@/middleware/error";
+import logger from "./logger";
 
 interface IContext {
   (
@@ -73,12 +73,14 @@ export const transactional = (context: IContext) => {
       await context(req, res, entityManager, next);
       await queryRunner.commitTransaction();
     } catch (error) {
-      logger.error(error);
-      const stack = (error as Error).stack;
+      const stack = (error as HttpError).stack || undefined;
+      const message = (error as HttpError).message || "Internal Server Error";
+      const status = (error as HttpError).status || 500;
+
       await queryRunner.rollbackTransaction();
       throw new HttpError({
-        status: 500,
-        message: "Internal Server Error",
+        status,
+        message,
         stack,
       });
     } finally {

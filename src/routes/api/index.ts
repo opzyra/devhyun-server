@@ -1,7 +1,7 @@
 import express from "express";
 
-import upload from "@/routes/api/upload";
-import auth from "@/routes/api/auth";
+import upload from "./upload";
+import auth from "./auth";
 
 const router = express.Router();
 

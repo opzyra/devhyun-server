@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from "express";
 import logger from "@/lib/logger";
-import { ValidationError } from "class-validator";
 
 interface IErrorProps {
   status: number;
@@ -73,7 +72,7 @@ export const error = (
   const status = error.status || 500;
   const errors = error.errors;
 
-  if (error.stack) {
+  if (status === 500 && error.stack) {
     logger.error(error);
   }
 

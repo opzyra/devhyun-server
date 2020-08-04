@@ -1,7 +1,7 @@
 import { IncomingMessage, ServerResponse } from "http";
 import * as Sentry from "@sentry/node";
 
-import { MiddlewareError } from "@/middleware/error";
+import { MiddlewareError } from "./error";
 
 export default function sentryHandler(): (
   error: MiddlewareError,

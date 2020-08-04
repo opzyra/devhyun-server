@@ -1,6 +1,7 @@
-import app from "@/app";
 import db from "@/lib/database";
 import logger from "@/lib/logger";
+
+import app from "./app";
 
 const runServer = async () => {
   try {
