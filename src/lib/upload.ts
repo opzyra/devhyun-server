@@ -9,7 +9,7 @@ import mkdirs from "node-mkdirs";
 
 export interface IUploadResponse {
   mimetype: string;
-  ext: string;
+  extension: string;
   name: string;
   size: number;
   src: string;
@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
     cb(null, "./uploads/" + dypth);
   },
   filename(req, file, cb) {
-    const ext = file.mimetype.split("/")[1];
+    const extension = file.mimetype.split("/")[1];
     cb(
       null,
       (() => {
@@ -34,7 +34,7 @@ const storage = multer.diskStorage({
           .join("");
       })() +
         "." +
-        ext
+        extension
     );
   },
 });
@@ -142,12 +142,12 @@ const file = async (
   }
 
   const mimetype = file.mimetype;
-  const ext = file.mimetype.split("/")[1];
+  const extension = file.mimetype.split("/")[1];
   const name = file.originalname;
   const size = file.size;
   const src = `${process.env.APP_DOMAIN}/uploads/${dypth}/${file.filename}`;
 
-  return { mimetype, ext, name, size, src };
+  return { mimetype, extension, name, size, src };
 };
 
 const image = async (
@@ -175,12 +175,12 @@ const image = async (
   }
 
   const mimetype = file.mimetype;
-  const ext = file.mimetype.split("/")[1];
+  const extension = file.mimetype.split("/")[1];
   const name = file.originalname;
   const size = file.size;
   const src = `${process.env.APP_DOMAIN}/uploads/${dypth}/${file.filename}`;
 
-  return { mimetype, ext, name, size, src };
+  return { mimetype, extension, name, size, src };
 };
 
 const thumbnail = async (
@@ -214,12 +214,12 @@ const thumbnail = async (
   }
 
   const mimetype = file.mimetype;
-  const ext = file.mimetype.split("/")[1];
+  const extension = file.mimetype.split("/")[1];
   const name = "th_" + file.originalname;
   const size = file.size;
   const src = `${process.env.APP_DOMAIN}/uploads/${dypth}/th_${file.filename}`;
 
-  return { mimetype, ext, name, size, src };
+  return { mimetype, extension, name, size, src };
 };
 
 export default {

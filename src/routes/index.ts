@@ -1,24 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-var-requires */
 import express from "express";
-import path from "path";
-import fs from "fs";
+import api from "@/routes/api";
 
 const router = express.Router();
 
-Object.assign(
-  {},
-  ...fs
-    .readdirSync(__dirname)
-    .filter(
-      (file) =>
-        file.indexOf(".") !== 0 && file !== "index.ts" && file !== "index.js"
-    )
-    .map((file) => {
-      const route = require(path.join(__dirname, file)).default;
-      router.use(route);
-    })
-);
+router.use("/api", api);
+
+router.get("/", (req, res) => {
+  res.send("Devhyun");
+});
 
 export default router;

@@ -1,8 +1,6 @@
 import "reflect-metadata";
 import "./env";
 
-import * as Sentry from "@sentry/node";
-
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 
@@ -12,6 +10,7 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import helmet from "helmet";
 
+import sentry from "@/middleware/sentry";
 import { endpoint, error } from "@/middleware/error";
 import debug from "@/middleware/debug";
 
@@ -37,7 +36,6 @@ const initApp = async (): Promise<Express> => {
 
   app.use(helmet());
 
-  app.use(express.static("public"));
   app.use("/uploads", express.static("uploads"));
 
   app.use(bodyParser.json());
@@ -49,14 +47,11 @@ const initApp = async (): Promise<Express> => {
 
   if (process.env.NODE_ENV == "production") {
     app.use(compression());
-
-    Sentry.init({
-      dsn: process.env.SENTRY_DSN,
-    });
-    app.use(Sentry.Handlers.errorHandler());
+    app.use(sentry());
   } else {
     app.use(debug);
   }
+
   app.use(endpoint, error);
 
   return app;
