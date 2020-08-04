@@ -1,6 +1,6 @@
 import winston from "winston";
-import moment from "moment";
 import DailyRotateFile from "winston-daily-rotate-file";
+import { format } from "date-fns";
 
 export const errorLogger = winston.createLogger({
   transports: [
@@ -8,7 +8,7 @@ export const errorLogger = winston.createLogger({
       level: "error",
       format: winston.format.printf(
         (info) =>
-          `${moment().format("YYYY-MM-DD HH:mm:ss.SSS")} [ERROR]: ${
+          `${format(new Date(), "yyyy.MM.dd HH:mm:ss.SSS")} [ERROR]: ${
             info.message
           }`
       ),
@@ -18,7 +18,7 @@ export const errorLogger = winston.createLogger({
       zippedArchive: false,
       format: winston.format.printf(
         (info) =>
-          `${moment().format("YYYY-MM-DD HH:mm:ss.SSS")} [ERROR]: ${
+          `${format(new Date(), "yyyy.MM.dd HH:mm:ss.SSS")} [ERROR]: ${
             info.message
           }`
       ),
@@ -45,7 +45,7 @@ export const debugLogger = winston.createLogger({
       level: process.env.NODE_ENV === "productionuction" ? "info" : "debug",
       format: winston.format.printf(
         (info) =>
-          `${moment().format("YYYY-MM-DD HH:mm:ss.SSS")} [DEBUG]: ${
+          `${format(new Date(), "yyyy.MM.dd HH:mm:ss.SSS")} [DEBUG]: ${
             info.message
           }`
       ),

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createConnection,
   Connection,
@@ -7,11 +9,19 @@ import {
 } from "typeorm";
 import { SnakeNamingStrategy } from "typeorm-naming-strategies";
 
+import { Request, Response, NextFunction } from "express";
+
 import path from "path";
 import logger from "./logger";
+import { HttpError } from "@/middleware/error";
 
 interface IContext {
-  (arg1: EntityManager): Promise<void>;
+  (
+    arg1: Request,
+    arg2: Response,
+    arg3: EntityManager,
+    arg4?: NextFunction
+  ): Promise<void>;
 }
 
 const database = {
@@ -45,25 +55,36 @@ const database = {
     }
     return await this.connect();
   },
-  async transaction(context: IContext): Promise<void> {
+};
+
+export const transactional = (context: IContext) => {
+  return async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
     const connection = getConnection();
     const queryRunner = connection.createQueryRunner();
     const entityManager = queryRunner.manager;
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
     try {
-      await context(entityManager);
+      await context(req, res, entityManager, next);
+      await queryRunner.commitTransaction();
     } catch (error) {
       logger.error(error);
+      const stack = (error as Error).stack;
       await queryRunner.rollbackTransaction();
+      throw new HttpError({
+        status: 500,
+        message: "Internal Server Error",
+        stack,
+      });
     } finally {
-      async () => {
-        await queryRunner.release();
-      };
+      await queryRunner.release();
     }
-  },
+  };
 };
 
 export default database;

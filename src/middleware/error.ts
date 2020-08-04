@@ -1,6 +1,22 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from "express";
 import logger from "@/lib/logger";
+import { ValidationError } from "class-validator";
+
+interface IErrorProps {
+  status: number;
+  message: string;
+  errors?: (
+    | {
+        value: any;
+        property: string;
+        messages: string[];
+      }
+    | undefined
+  )[];
+  stack?: string;
+}
 
 export class HttpError implements MiddlewareError {
   status?: number | undefined;
@@ -10,10 +26,21 @@ export class HttpError implements MiddlewareError {
   message: string;
   name: string;
   stack?: string | undefined;
+  errors?: (
+    | {
+        value: any;
+        property: string;
+        messages: string[];
+      }
+    | undefined
+  )[];
 
-  constructor(message: string, status: number) {
+  constructor(props: IErrorProps) {
+    const { message, status, errors, stack } = props;
     this.message = message;
     this.status = status;
+    this.errors = errors;
+    this.stack = stack;
     this.name = "HttpError";
   }
 }
@@ -44,11 +71,12 @@ export const error = (
 ): void => {
   const message = error.message || "Internal Server Error";
   const status = error.status || 500;
+  const errors = error.errors;
 
   if (error.stack) {
     logger.error(error);
   }
 
-  res.status(status).json({ message });
+  res.status(status).json({ message, errors });
   return;
 };

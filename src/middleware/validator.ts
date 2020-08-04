@@ -5,6 +5,7 @@ import { ClassType } from "class-transformer/ClassTransformer";
 
 import { plainToClass } from "class-transformer";
 import { validate } from "class-validator";
+import { HttpError } from "./error";
 
 export default class Validator {
   static query(param: ClassType<Object>, skipMissingProperties = false) {
@@ -31,11 +32,11 @@ export default class Validator {
           }
       );
 
-      res.status(400).json({
-        errors,
+      throw new HttpError({
+        status: 400,
         message: "Validation Error occured",
+        errors,
       });
-      return;
     };
   }
   static body(type: ClassType<Object>, skipMissingProperties = false) {
@@ -62,11 +63,11 @@ export default class Validator {
           }
       );
 
-      res.status(400).json({
-        errors,
+      throw new HttpError({
+        status: 400,
         message: "Validation Error occured",
+        errors,
       });
-      return;
     };
   }
 }
