@@ -1,4 +1,4 @@
-import { Query, Resolver, Arg } from "type-graphql";
+import { Query, Resolver, Arg, Authorized } from "type-graphql";
 import User from "@/models/User";
 
 import LoginInput from "./LoginInput";
@@ -10,5 +10,12 @@ export class UserResolver {
     const user = new User();
     user.email = "opzyra@nnd";
     return user;
+  }
+
+  @Authorized("USER")
+  @Query(() => User, { nullable: true })
+  async test(): Promise<User> {
+    const [user, count] = await User.findAndCount();
+    return user[0];
   }
 }

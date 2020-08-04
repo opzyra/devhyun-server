@@ -10,26 +10,28 @@ import cookieParser from "cookie-parser";
 import compression from "compression";
 import helmet from "helmet";
 
+import { authChecker, formatError, context } from "@/lib/graphql";
+
 import sentry from "@/middleware/sentry";
 import { endpoint, error } from "@/middleware/error";
 import debug from "@/middleware/debug";
 
-import { formatError } from "@/lib/graphql";
-
-import routes from "@/routes";
+import routes from "./routes";
 
 const initApp = async (): Promise<Express> => {
   const app = express();
 
   const schema = await buildSchema({
     resolvers: [__dirname + "/graphql/**/*Resolver.ts"],
+    authChecker,
   });
 
   const apolloServer = new ApolloServer({
     schema,
-    playground: true,
-    formatError,
+    playground: process.env.NODE_ENV !== "production",
     debug: process.env.NODE_ENV !== "production",
+    formatError,
+    context,
   });
 
   apolloServer.applyMiddleware({ app });

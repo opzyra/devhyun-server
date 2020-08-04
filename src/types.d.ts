@@ -28,6 +28,12 @@ declare namespace NodeJS {
   }
 }
 
+declare namespace Express {
+  interface Request {
+    user?: import("@/models/user").default;
+  }
+}
+
 declare module "node-mkdirs" {
   import { MakeDirectoryOptions } from "fs";
 
