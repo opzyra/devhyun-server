@@ -2,42 +2,32 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   BaseEntity,
-  ManyToMany,
-  JoinTable,
   Column,
-  Index,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  ManyToOne,
+  Index,
 } from "typeorm";
 
 import { ObjectType, Field, ID } from "type-graphql";
-
-import Post from "@/models/Post";
+import Post from "./Post";
 
 @ObjectType()
-@Entity("series", { synchronize: true })
-export default class Series extends BaseEntity {
+@Entity("post_path", { synchronize: true })
+export default class PostPath extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
   @Field()
   @Column({ length: 255 })
-  title!: string;
+  @Index({ unique: true })
+  path!: string;
 
-  @Field()
-  @Column({ length: 255 })
-  thumbnail!: string;
-
-  @Field()
-  @Column({ type: "mediumtext" })
-  contents!: string;
-
-  // Series(1) <-> Post(*)
+  // PostPath(*) <-> Post(1)
   @Field(() => Post)
-  @OneToMany(() => Post, (post) => post.series)
-  posts!: Post[];
+  @ManyToOne(() => Post, { cascade: true })
+  post!: Post;
 
   @Field()
   @CreateDateColumn({ name: "created_at" })

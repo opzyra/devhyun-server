@@ -10,7 +10,7 @@ import {
 } from "typeorm";
 
 import { ObjectType, Field, ID } from "type-graphql";
-import Post from "@/models/Post";
+import Post from "./Post";
 
 @ObjectType()
 @Entity("hit", { synchronize: true })
@@ -19,8 +19,7 @@ export default class Hit extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
-  @Field()
-  @Index({ unique: true })
+  @Index()
   @Column({ length: 255 })
   ip!: string;
 

@@ -9,13 +9,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  OneToMany,
 } from "typeorm";
 
 import { ObjectType, Field, ID } from "type-graphql";
-import Series from "@/models/Series";
-import Tag from "@/models/Tag";
-import Like from "@/models/Like";
+import Series from "./Series";
+import Tag from "./Tag";
 
 @ObjectType()
 @Entity("post", { synchronize: true })
@@ -26,12 +24,8 @@ export default class Post extends BaseEntity {
 
   @Field()
   @Column({ length: 255 })
-  title!: string;
-
-  @Field()
-  @Column({ length: 255 })
   @Index({ unique: true })
-  path!: string;
+  title!: string;
 
   @Field()
   @Column({ length: 255 })
@@ -49,14 +43,6 @@ export default class Post extends BaseEntity {
   @Column({ default: 0 })
   likes!: number;
 
-  @Field()
-  @CreateDateColumn({ name: "created_at" })
-  createdAt!: Date;
-
-  @Field()
-  @UpdateDateColumn({ name: "updated_at" })
-  updatedAt!: Date;
-
   // Post(*) <-> Tag(*)
   @Field(() => Tag)
   @ManyToMany(() => Tag, { onDelete: "CASCADE" })
@@ -67,4 +53,12 @@ export default class Post extends BaseEntity {
   @Field(() => Series)
   @ManyToOne(() => Series, (series) => series.posts)
   series!: Series;
+
+  @Field()
+  @CreateDateColumn({ name: "created_at" })
+  createdAt!: Date;
+
+  @Field()
+  @UpdateDateColumn({ name: "updated_at" })
+  updatedAt!: Date;
 }

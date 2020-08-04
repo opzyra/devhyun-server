@@ -16,6 +16,11 @@ export default class Token extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
+  // Token(1) <-> User(1)
+  @OneToOne(() => User)
+  @JoinColumn()
+  user!: User;
+
   @Field()
   @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;
@@ -23,9 +28,4 @@ export default class Token extends BaseEntity {
   @Field()
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt!: Date;
-
-  // Token(1) <-> User(1)
-  @OneToOne(() => User)
-  @JoinColumn()
-  user!: User;
 }

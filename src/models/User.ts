@@ -36,4 +36,12 @@ export default class User extends BaseEntity {
   @Field()
   @UpdateDateColumn({ name: "updated_at" })
   updatedAt!: Date;
+
+  static async findByEmail(email: string): Promise<User | undefined> {
+    return await this.findOne({
+      where: {
+        email,
+      },
+    });
+  }
 }

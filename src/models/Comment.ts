@@ -5,6 +5,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  Index,
 } from "typeorm";
 
 import { ObjectType, Field, ID } from "type-graphql";
@@ -16,11 +17,14 @@ export default class Comment extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id!: string;
 
+  @Index()
+  @Column({ length: 255 })
+  ip!: string;
+
   @Field()
   @Column({ length: 255 })
   name!: string;
 
-  @Field()
   @Column({ length: 255 })
   password!: string;
 

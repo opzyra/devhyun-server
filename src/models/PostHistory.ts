@@ -2,25 +2,26 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   BaseEntity,
-  ManyToMany,
-  JoinTable,
   Column,
-  Index,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany,
+  ManyToOne,
 } from "typeorm";
 
 import { ObjectType, Field, ID } from "type-graphql";
-
-import Post from "@/models/Post";
+import Post from "./Post";
 
 @ObjectType()
-@Entity("series", { synchronize: true })
-export default class Series extends BaseEntity {
+@Entity("post_history", { synchronize: true })
+export default class PostHistory extends BaseEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn("uuid")
   id!: string;
+
+  // PostHistory(*) <-> Post(1)
+  @Field(() => Post)
+  @ManyToOne(() => Post, { cascade: true })
+  post!: Post;
 
   @Field()
   @Column({ length: 255 })
@@ -33,11 +34,6 @@ export default class Series extends BaseEntity {
   @Field()
   @Column({ type: "mediumtext" })
   contents!: string;
-
-  // Series(1) <-> Post(*)
-  @Field(() => Post)
-  @OneToMany(() => Post, (post) => post.series)
-  posts!: Post[];
 
   @Field()
   @CreateDateColumn({ name: "created_at" })
