@@ -2,10 +2,10 @@ import { Request, Response } from "express";
 
 import pify from "pify";
 import multer from "multer";
-import moment from "moment";
 import randomString from "random-string";
 import sharp from "sharp";
 import mkdirs from "node-mkdirs";
+import { format } from "date-fns";
 
 export interface IUploadResponse {
   mimetype: string;
@@ -15,7 +15,7 @@ export interface IUploadResponse {
   src: string;
 }
 
-const dypth = moment().format("YYYYMMDD");
+const dypth = format(new Date(), "yyyyMMdd");
 const storage = multer.diskStorage({
   destination(req, file, cb) {
     cb(null, "./uploads/" + dypth);
